@@ -1,6 +1,8 @@
-import pandas as pd
+from typing import Tuple, Union
+
 import numpy as np
-from typing import Union, Tuple
+import pandas as pd
+
 
 def load_csv_data(filepath: str, datetime_column: str = None, 
                  value_column: str = None) -> pd.DataFrame:
@@ -42,7 +44,7 @@ def generate_synthetic_data(n_points: int = 1000,
         Tuple: (DataFrame with time series data, array with anomaly indicators)
     """
     # Generate date range
-    dates = pd.date_range(start='2023-01-01', periods=n_points, freq='H')
+    dates = pd.date_range(start='2023-01-01', periods=n_points, freq='h')
     
     # Generate normal time series with weekly seasonality
     hours = np.arange(n_points)

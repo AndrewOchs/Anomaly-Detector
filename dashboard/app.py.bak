@@ -1,36 +1,28 @@
-import os
-import sys
-
 import dash
-import dash_bootstrap_components as dbc
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
 from dash import dcc, html
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
+import plotly.graph_objects as go
+import pandas as pd
+import numpy as np
+import sys
+import os
 
 # Add the project root directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from anomaly_detection.algorithms.statistical import (iqr_detection,
-                                                      moving_average_detection,
-                                                      z_score_detection)
+from anomaly_detection.algorithms.statistical import z_score_detection, iqr_detection, moving_average_detection
 from anomaly_detection.utils.data_loader import generate_synthetic_data
-from anomaly_detection.visualization.plots import \
-    plot_time_series_with_anomalies
+from anomaly_detection.visualization.plots import plot_time_series_with_anomalies
 
 # Initialize the Dash app
-print("Initializing Dash app...")
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 # Generate synthetic data for demonstration
-print("Generating synthetic data...")
 df, true_anomalies = generate_synthetic_data(n_points=1000, anomaly_percentage=0.05)
-print("Data generated successfully.")
 
 # Layout 
-print("Creating dashboard layout...")
 app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
@@ -78,7 +70,6 @@ app.layout = dbc.Container([
         ], width=9)
     ])
 ], fluid=True)
-print("Layout created.")
 
 # Callback to update parameter controls based on selected algorithm
 @app.callback(
@@ -148,7 +139,6 @@ def update_parameter_controls(algorithm):
      Input('ma-threshold-slider', 'value')]
 )
 def update_graph(algorithm, z_threshold, iqr_k, window_size, ma_threshold):
-    print(f"Updating graph with algorithm: {algorithm}")
     # Default values for parameters not in use
     z_threshold = z_threshold or 3.0
     iqr_k = iqr_k or 1.5
@@ -183,8 +173,5 @@ def update_graph(algorithm, z_threshold, iqr_k, window_size, ma_threshold):
     
     return fig, data_info, anomaly_info
 
-print("Dashboard setup complete, ready to start server...")
 if __name__ == '__main__':
-    # Use app.run() instead of app.run_server() for newer Dash versions
-    print("Starting Dash server...")
-    app.run(debug=True)
+    app.run_server(debug=True)
