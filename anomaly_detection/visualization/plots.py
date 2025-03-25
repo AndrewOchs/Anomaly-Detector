@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from typing import Union, Tuple, List
+from typing import Union
 
 def plot_time_series_with_anomalies(data: Union[pd.DataFrame, pd.Series], 
                                    anomalies: np.ndarray,
@@ -27,6 +27,7 @@ def plot_time_series_with_anomalies(data: Union[pd.DataFrame, pd.Series],
         series = data
     
     if use_plotly:
+        # Create a new figure
         fig = go.Figure()
         
         # Add time series
@@ -38,15 +39,21 @@ def plot_time_series_with_anomalies(data: Union[pd.DataFrame, pd.Series],
             line=dict(color='blue')
         ))
         
-        # Add anomalies
-        anomaly_indices = np.where(anomalies)[0]
-        fig.add_trace(go.Scatter(
-            x=series.index[anomaly_indices],
-            y=series.values[anomaly_indices],
-            mode='markers',
-            name='Anomalies',
-            marker=dict(color='red', size=10)
-        ))
+        # Add anomalies if there are any
+        if np.any(anomalies):
+            anomaly_indices = np.where(anomalies)[0]
+            
+            # Make sure anomaly_indices doesn't exceed data length
+            anomaly_indices = anomaly_indices[anomaly_indices < len(series)]
+            
+            if len(anomaly_indices) > 0:
+                fig.add_trace(go.Scatter(
+                    x=series.index[anomaly_indices],
+                    y=series.values[anomaly_indices],
+                    mode='markers',
+                    name='Anomalies',
+                    marker=dict(color='red', size=10)
+                ))
         
         # Update layout
         fig.update_layout(
@@ -65,10 +72,14 @@ def plot_time_series_with_anomalies(data: Union[pd.DataFrame, pd.Series],
         # Plot time series
         ax.plot(series.index, series.values, color='blue', label='Time Series')
         
-        # Plot anomalies
-        anomaly_indices = np.where(anomalies)[0]
-        ax.scatter(series.index[anomaly_indices], series.values[anomaly_indices], 
-                  color='red', label='Anomalies', s=50)
+        # Plot anomalies if there are any
+        if np.any(anomalies):
+            anomaly_indices = np.where(anomalies)[0]
+            anomaly_indices = anomaly_indices[anomaly_indices < len(series)]
+            
+            if len(anomaly_indices) > 0:
+                ax.scatter(series.index[anomaly_indices], series.values[anomaly_indices], 
+                         color='red', label='Anomalies', s=50)
         
         # Customize plot
         ax.set_title(title)
