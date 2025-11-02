@@ -50,6 +50,30 @@ logs/
 .env.test.local
 .env.production.local
 
-# Mac OS__pycache__/
-*.pyc
+# Mac OS
 .DS_Store
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Alembic
+alembic/versions/*.pyc
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Docker
+docker-compose.override.yml
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
