@@ -19,7 +19,7 @@ class Dataset(Base):
     source_type = Column(String(50), nullable=False)  # 'upload', 'stock', 'crypto', 'weather', 'synthetic'
     file_path = Column(String(500), nullable=True)  # For uploaded files
     data_json = Column(JSONB, nullable=True)  # Stored time series data as JSON
-    metadata = Column(JSONB, nullable=True)  # Additional metadata (column names, data types, etc.)
+    dataset_metadata = Column(JSONB, nullable=True)  # Additional metadata (column names, data types, etc.)
     row_count = Column(Integer, nullable=True)
     description = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
